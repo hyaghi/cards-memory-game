@@ -46,7 +46,17 @@ export const useCalendar = () => {
     try {
       // Simulating API call with mock data
       setTimeout(() => {
-        setEvents(mockEvents);
+        // Type assertion to ensure mockEvents matches CalendarEvent[]
+        const typedEvents = mockEvents.map(event => ({
+          ...event,
+          attendees: event.attendees?.map(attendee => ({
+            ...attendee,
+            // Ensure responseStatus is one of the allowed values
+            responseStatus: (attendee.responseStatus as 'needsAction' | 'declined' | 'tentative' | 'accepted') || 'needsAction'
+          }))
+        })) as CalendarEvent[];
+        
+        setEvents(typedEvents);
         setIsLoading(false);
       }, 1500);
     } catch (error) {
