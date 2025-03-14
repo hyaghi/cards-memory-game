@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 type CardProps = {
   card: {
@@ -12,6 +13,17 @@ type CardProps = {
 };
 
 export const Card = ({ card, handleChoice }: CardProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Simulate loading of the icon
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 50); // Short delay to simulate lazy loading
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="relative">
       <motion.div
@@ -40,9 +52,13 @@ export const Card = ({ card, handleChoice }: CardProps) => {
             card.matched ? "border-green-500" : "border-gray-100"
           }`}
         >
-          <div className="text-indigo-800">
-            {card.icon}
-          </div>
+          {isLoaded ? (
+            <div className="text-indigo-800">
+              {card.icon}
+            </div>
+          ) : (
+            <div className="animate-pulse h-10 w-10 bg-indigo-100 rounded-full"></div>
+          )}
         </div>
       </motion.div>
     </div>

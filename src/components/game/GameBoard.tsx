@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card } from "./Card";
 import { Lightbulb, Brain, Target, Key, Star, Lock, Search, Puzzle, Zap, Eye } from "lucide-react";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ export const GameBoard = ({ difficulty, incrementScore, incrementTurns, endGame 
   const [firstChoice, setFirstChoice] = useState<CardType | null>(null);
   const [secondChoice, setSecondChoice] = useState<CardType | null>(null);
   const [disabled, setDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Define card pairs based on difficulty
   const getCardCount = () => {
@@ -35,8 +36,8 @@ export const GameBoard = ({ difficulty, incrementScore, incrementTurns, endGame 
     }
   };
   
-  // Create all available icon options
-  const icons = [
+  // Memoize the icons to prevent unnecessary re-renders
+  const icons = useMemo(() => [
     { element: <Lightbulb className="h-10 w-10" />, type: "lightbulb" },
     { element: <Brain className="h-10 w-10" />, type: "brain" },
     { element: <Target className="h-10 w-10" />, type: "target" },
@@ -47,11 +48,13 @@ export const GameBoard = ({ difficulty, incrementScore, incrementTurns, endGame 
     { element: <Puzzle className="h-10 w-10" />, type: "puzzle" },
     { element: <Zap className="h-10 w-10" />, type: "zap" },
     { element: <Eye className="h-10 w-10" />, type: "eye" },
-  ];
+  ], []);
 
   // Create and shuffle the cards
   useEffect(() => {
     const createCards = () => {
+      setIsLoading(true);
+      
       const cardCount = getCardCount();
       // Get required number of icons
       const selectedIcons = [...icons].slice(0, cardCount);
@@ -69,10 +72,14 @@ export const GameBoard = ({ difficulty, incrementScore, incrementTurns, endGame 
       return cardPairs.sort(() => Math.random() - 0.5);
     };
     
-    setCards(createCards());
-    setFirstChoice(null);
-    setSecondChoice(null);
-  }, [difficulty]);
+    // Use setTimeout to prevent UI freezing during card creation
+    setTimeout(() => {
+      setCards(createCards());
+      setFirstChoice(null);
+      setSecondChoice(null);
+      setIsLoading(false);
+    }, 100);
+  }, [difficulty, icons]);
   
   // Check if all cards are matched to end the game
   useEffect(() => {
@@ -152,6 +159,14 @@ export const GameBoard = ({ difficulty, incrementScore, incrementTurns, endGame 
       default: return "grid-cols-4";
     }
   };
+  
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto flex justify-center items-center h-60">
+        <div className="text-indigo-600 text-lg">Loading cards...</div>
+      </div>
+    );
+  }
   
   return (
     <div className="w-full max-w-4xl mx-auto">
