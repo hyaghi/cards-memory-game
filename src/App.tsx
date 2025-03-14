@@ -24,20 +24,22 @@ const App = () => {
   console.log("App component rendering");
   
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <HashRouter>
-          <div className="app-container">
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </HashRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <div className="app-root">
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <HashRouter>
+            <div className="app-container">
+              <Toaster />
+              <Sonner />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </HashRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </div>
   );
 };
 

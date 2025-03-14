@@ -26,10 +26,11 @@ const renderApp = () => {
     } else {
       console.log("Root element found, rendering app");
       // Clear any loading indicators
-      while (rootElement.firstChild) {
-        rootElement.removeChild(rootElement.firstChild);
-      }
-      createRoot(rootElement).render(<App />);
+      rootElement.innerHTML = '';
+      
+      // Create a fresh root and render
+      const root = createRoot(rootElement);
+      root.render(<App />);
       console.log("App should be rendered now");
     }
   } catch (error) {
@@ -43,10 +44,14 @@ const renderApp = () => {
   }
 };
 
-// Check if document is already loaded
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderApp);
-} else {
-  console.log("Document already loaded, running renderApp immediately");
-  renderApp();
+// Force immediate rendering regardless of document state
+console.log("Executing renderApp immediately");
+renderApp();
+
+// Also add event listener as a fallback
+if (document.readyState !== 'complete') {
+  window.addEventListener('load', () => {
+    console.log("Window load event fired, rendering app again");
+    renderApp();
+  });
 }
