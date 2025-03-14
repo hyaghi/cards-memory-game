@@ -7,7 +7,11 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
+// Create a client
 const queryClient = new QueryClient();
+
+// Add console log to help debug
+console.log("App rendering, environment:", import.meta.env.MODE);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
