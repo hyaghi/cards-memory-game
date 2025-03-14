@@ -4,10 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import { initAnalytics } from "./config/firebase";
 
 // Create a query client
 const queryClient = new QueryClient();
@@ -24,24 +22,6 @@ console.log("Window location object:", {
 
 const App = () => {
   console.log("App component rendering");
-  
-  // Initialize Firebase Analytics when app loads
-  useEffect(() => {
-    const setupAnalytics = async () => {
-      try {
-        const analytics = await initAnalytics();
-        if (analytics) {
-          console.log("Firebase Analytics initialized successfully");
-        } else {
-          console.log("Firebase Analytics not supported in this environment");
-        }
-      } catch (error) {
-        console.error("Error initializing Firebase Analytics:", error);
-      }
-    };
-    
-    setupAnalytics();
-  }, []);
   
   return (
     <div className="app-root">
