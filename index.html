@@ -8,10 +8,19 @@
     <meta name="description" content="Memory card matching game" />
     <meta name="author" content="Yaghi" />
     <meta property="og:image" content="og-image.png" />
+    <script>
+      // Debugging info
+      console.log("HTML loaded, current path:", window.location.pathname);
+    </script>
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Loading indicator that will be replaced when React loads -->
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif;">
+        Loading Memory Game...
+      </div>
+    </div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="./src/main.tsx"></script>

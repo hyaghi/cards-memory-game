@@ -21,9 +21,21 @@ jobs:
       - name: Install dependencies 📦
         run: npm ci
 
+      - name: Debug environment
+        run: |
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+          echo "Current directory: $(pwd)"
+          echo "Repository: ${{ github.repository }}"
+          
       - name: Build 🔧
         run: npm run build
         
+      - name: Debug build output
+        run: |
+          echo "Build output:"
+          ls -la ./dist
+          
       - name: Add .nojekyll file 📄
         run: touch ./dist/.nojekyll
           
@@ -32,3 +44,4 @@ jobs:
         with:
           folder: dist
           branch: gh-pages
+          clean: true # Automatically remove deleted files

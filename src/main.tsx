@@ -1,14 +1,32 @@
 
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
 
-// Add console log to help debug
-console.log('Main script running, attempting to render app');
+// Add extensive console logs to help debug
+console.log('Main script running, environment:', import.meta.env.MODE);
+console.log('Base URL:', import.meta.env.BASE_URL);
 
-const rootElement = document.getElementById("root");
-if (!rootElement) {
-  console.error("Failed to find the root element");
-} else {
-  createRoot(rootElement).render(<App />);
+// Error handling for rendering
+try {
+  const rootElement = document.getElementById("root");
+  if (!rootElement) {
+    console.error("Failed to find the root element");
+    // Create a fallback element if root is missing
+    const fallbackRoot = document.createElement('div');
+    fallbackRoot.id = 'root';
+    document.body.appendChild(fallbackRoot);
+    console.log("Created fallback root element");
+    createRoot(fallbackRoot).render(<App />);
+  } else {
+    console.log("Root element found, rendering app");
+    createRoot(rootElement).render(<App />);
+  }
+} catch (error) {
+  console.error("Error rendering the app:", error);
+  // Display error on page for visibility
+  document.body.innerHTML = `<div style="color:red;padding:20px;">
+    <h1>Error rendering app</h1>
+    <pre>${error instanceof Error ? error.message : 'Unknown error'}</pre>
+  </div>`;
 }
