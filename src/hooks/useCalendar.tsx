@@ -1,129 +1,135 @@
 
-import { useState, useEffect } from 'react';
-import { useGoogleAuth } from './useGoogleAuth';
-import { mockEvents } from '@/services/googleService';
-import { addHours } from 'date-fns';
-import { toast } from '@/hooks/use-toast';
+import { useState, useEffect } from "react";
+import { toast } from "@/components/ui/use-toast";
+import { useGoogleAuth } from "./useGoogleAuth";
 
-interface CalendarEvent {
+export interface CalendarEvent {
   id: string;
   summary: string;
-  description?: string;
-  location?: string;
-  start?: {
+  description: string;
+  location: string;
+  start: {
     dateTime: string;
-    timeZone?: string;
+    timeZone: string;
   };
-  end?: {
+  end: {
     dateTime: string;
-    timeZone?: string;
+    timeZone: string;
   };
-  attendees?: Array<{
+  attendees: {
     email: string;
     displayName?: string;
-    responseStatus?: 'needsAction' | 'declined' | 'tentative' | 'accepted';
-  }>;
+    responseStatus?: "accepted" | "needsAction" | "declined" | "tentative";
+  }[];
 }
 
 export const useCalendar = () => {
-  const { isAuthenticated } = useGoogleAuth();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { token, isAuthenticated } = useGoogleAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && token) {
       fetchEvents();
-    } else {
-      setEvents([]);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, token]);
 
   const fetchEvents = async () => {
-    setIsLoading(true);
-    setError(null);
-    
+    if (!isAuthenticated || !token) return;
+
+    setLoading(true);
     try {
-      // Simulating API call with mock data
-      setTimeout(() => {
-        setEvents(mockEvents);
-        setIsLoading(false);
-      }, 1500);
+      const response = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events?maxResults=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      
+      // Cast the events to ensure they match the CalendarEvent type
+      const typedEvents = data.items.map((event: any): CalendarEvent => ({
+        id: event.id,
+        summary: event.summary || "",
+        description: event.description || "",
+        location: event.location || "",
+        start: event.start || { dateTime: "", timeZone: "" },
+        end: event.end || { dateTime: "", timeZone: "" },
+        attendees: event.attendees?.map((attendee: any) => ({
+          email: attendee.email,
+          displayName: attendee.displayName,
+          responseStatus: attendee.responseStatus as "accepted" | "needsAction" | "declined" | "tentative"
+        })) || []
+      }));
+      
+      setEvents(typedEvents);
     } catch (error) {
-      console.error('Failed to fetch events', error);
-      setError('Failed to fetch calendar events. Please try again.');
-      setIsLoading(false);
+      console.error("Error fetching calendar events:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch calendar events",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const createEvent = (eventData: any) => {
-    const newEvent: CalendarEvent = {
-      id: `event-${Date.now()}`,
-      summary: eventData.summary,
-      description: eventData.description,
-      location: eventData.location,
-      start: {
-        dateTime: eventData.start?.dateTime || new Date().toISOString(),
-        timeZone: eventData.start?.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      end: {
-        dateTime: eventData.end?.dateTime || addHours(new Date(), 1).toISOString(),
-        timeZone: eventData.end?.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-      attendees: eventData.attendees || [],
-    };
-    
-    setEvents(prev => [...prev, newEvent]);
-    
-    toast({
-      title: "Event created",
-      description: "Your new event has been added to the calendar.",
-    });
-    
-    return newEvent;
+  const createEvent = async (eventData: Omit<CalendarEvent, "id">) => {
+    if (!isAuthenticated || !token) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        }
+      );
+
+      const data = await response.json();
+      
+      // Cast the new event to ensure it matches the CalendarEvent type
+      const newEvent: CalendarEvent = {
+        id: data.id,
+        summary: data.summary || "",
+        description: data.description || "",
+        location: data.location || "",
+        start: data.start || { dateTime: "", timeZone: "" },
+        end: data.end || { dateTime: "", timeZone: "" },
+        attendees: data.attendees?.map((attendee: any) => ({
+          email: attendee.email,
+          displayName: attendee.displayName,
+          responseStatus: attendee.responseStatus as "accepted" | "needsAction" | "declined" | "tentative"
+        })) || []
+      };
+      
+      setEvents([...events, newEvent]);
+      toast({
+        title: "Success",
+        description: "Event created successfully",
+      });
+      return newEvent;
+    } catch (error) {
+      console.error("Error creating calendar event:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create calendar event",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateEvent = (eventData: CalendarEvent) => {
-    setEvents(prev => 
-      prev.map(event => 
-        event.id === eventData.id ? { ...event, ...eventData } : event
-      )
-    );
-    
-    toast({
-      title: "Event updated",
-      description: "The event has been updated successfully.",
-    });
-  };
-
-  const deleteEvent = (id: string) => {
-    setEvents(prev => prev.filter(event => event.id !== id));
-    
-    toast({
-      title: "Event deleted",
-      description: "The event has been removed from your calendar.",
-    });
-  };
-
-  // Get upcoming events (today and future)
-  const upcomingEvents = events
-    .filter(event => {
-      if (!event.start?.dateTime) return false;
-      const eventDate = new Date(event.start.dateTime);
-      return eventDate >= new Date(new Date().setHours(0, 0, 0, 0));
-    })
-    .sort((a, b) => {
-      if (!a.start?.dateTime || !b.start?.dateTime) return 0;
-      return new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime();
-    });
-
-  return {
-    events,
-    upcomingEvents,
-    isLoading,
-    error,
-    createEvent,
-    updateEvent,
-    deleteEvent,
-  };
+  return { events, loading, fetchEvents, createEvent };
 };
