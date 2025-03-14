@@ -12,15 +12,21 @@ const Index = () => {
   const [turns, setTurns] = useState(0);
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("easy");
   const [showRules, setShowRules] = useState(false);
+  const [gameTime, setGameTime] = useState(0);
 
   const startGame = () => {
     setGameStarted(true);
     setScore(0);
     setTurns(0);
+    setGameTime(0);
   };
 
   const endGame = () => {
     setGameStarted(false);
+  };
+
+  const handleTimeUpdate = (time: number) => {
+    setGameTime(time);
   };
 
   return (
@@ -53,7 +59,13 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            <ScorePanel score={score} turns={turns} difficulty={difficulty} />
+            <ScorePanel 
+              score={score} 
+              turns={turns} 
+              difficulty={difficulty} 
+              isGameActive={gameStarted}
+              onTimeUpdate={handleTimeUpdate}
+            />
             <GameBoard 
               difficulty={difficulty} 
               incrementScore={() => setScore(score + 1)} 
