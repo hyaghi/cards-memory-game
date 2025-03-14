@@ -12,7 +12,9 @@ console.log('Document readyState:', document.readyState);
 // Wait for DOM to be fully loaded
 const renderApp = () => {
   try {
+    console.log("Attempting to render app...");
     const rootElement = document.getElementById("root");
+    
     if (!rootElement) {
       console.error("Failed to find the root element");
       // Create a fallback element if root is missing
@@ -28,6 +30,7 @@ const renderApp = () => {
         rootElement.removeChild(rootElement.firstChild);
       }
       createRoot(rootElement).render(<App />);
+      console.log("App should be rendered now");
     }
   } catch (error) {
     console.error("Error rendering the app:", error);
@@ -44,5 +47,6 @@ const renderApp = () => {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', renderApp);
 } else {
+  console.log("Document already loaded, running renderApp immediately");
   renderApp();
 }
