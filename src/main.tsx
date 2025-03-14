@@ -6,27 +6,43 @@ import './index.css';
 // Add extensive console logs to help debug
 console.log('Main script running, environment:', import.meta.env.MODE);
 console.log('Base URL:', import.meta.env.BASE_URL);
+console.log('Window location:', window.location.href);
+console.log('Document readyState:', document.readyState);
 
-// Error handling for rendering
-try {
-  const rootElement = document.getElementById("root");
-  if (!rootElement) {
-    console.error("Failed to find the root element");
-    // Create a fallback element if root is missing
-    const fallbackRoot = document.createElement('div');
-    fallbackRoot.id = 'root';
-    document.body.appendChild(fallbackRoot);
-    console.log("Created fallback root element");
-    createRoot(fallbackRoot).render(<App />);
-  } else {
-    console.log("Root element found, rendering app");
-    createRoot(rootElement).render(<App />);
+// Wait for DOM to be fully loaded
+const renderApp = () => {
+  try {
+    const rootElement = document.getElementById("root");
+    if (!rootElement) {
+      console.error("Failed to find the root element");
+      // Create a fallback element if root is missing
+      const fallbackRoot = document.createElement('div');
+      fallbackRoot.id = 'root';
+      document.body.appendChild(fallbackRoot);
+      console.log("Created fallback root element");
+      createRoot(fallbackRoot).render(<App />);
+    } else {
+      console.log("Root element found, rendering app");
+      // Clear any loading indicators
+      while (rootElement.firstChild) {
+        rootElement.removeChild(rootElement.firstChild);
+      }
+      createRoot(rootElement).render(<App />);
+    }
+  } catch (error) {
+    console.error("Error rendering the app:", error);
+    // Display error on page for visibility
+    document.body.innerHTML = `<div style="color:red;padding:20px;">
+      <h1>Error rendering app</h1>
+      <pre>${error instanceof Error ? error.message : 'Unknown error'}</pre>
+      <pre>${error instanceof Error && error.stack ? error.stack : ''}</pre>
+    </div>`;
   }
-} catch (error) {
-  console.error("Error rendering the app:", error);
-  // Display error on page for visibility
-  document.body.innerHTML = `<div style="color:red;padding:20px;">
-    <h1>Error rendering app</h1>
-    <pre>${error instanceof Error ? error.message : 'Unknown error'}</pre>
-  </div>`;
+};
+
+// Check if document is already loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderApp);
+} else {
+  renderApp();
 }

@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: '/memory-game/',  // Explicitly set for GitHub Pages
+  base: './', // Use relative paths for better compatibility
   server: {
     host: "::",
     port: 8080,

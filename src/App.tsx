@@ -14,18 +14,23 @@ const queryClient = new QueryClient();
 console.log("App rendering, environment:", import.meta.env.MODE);
 console.log("Base URL:", import.meta.env.BASE_URL);
 console.log("Current URL:", window.location.href);
+console.log("Window location object:", {
+  pathname: window.location.pathname,
+  hash: window.location.hash,
+  search: window.location.search
+});
 
 const App = () => {
   console.log("App component rendering");
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <HashRouter>
+          <Toaster />
+          <Sonner />
           <Routes>
             <Route path="/" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </HashRouter>
