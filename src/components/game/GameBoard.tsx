@@ -9,6 +9,7 @@ interface GameBoardProps {
   incrementScore: () => void;
   incrementTurns: () => void;
   endGame: () => void;
+  onGameComplete: () => void;
 }
 
 type CardType = {
@@ -19,7 +20,13 @@ type CardType = {
   type: string;
 };
 
-export const GameBoard = ({ difficulty, incrementScore, incrementTurns, endGame }: GameBoardProps) => {
+export const GameBoard = ({ 
+  difficulty, 
+  incrementScore, 
+  incrementTurns, 
+  endGame,
+  onGameComplete 
+}: GameBoardProps) => {
   const [cards, setCards] = useState<CardType[]>([]);
   const [firstChoice, setFirstChoice] = useState<CardType | null>(null);
   const [secondChoice, setSecondChoice] = useState<CardType | null>(null);
@@ -86,10 +93,10 @@ export const GameBoard = ({ difficulty, incrementScore, incrementTurns, endGame 
     if (cards.length > 0 && cards.every(card => card.matched)) {
       setTimeout(() => {
         toast.success("Congratulations! You've matched all cards!");
-        endGame();
+        onGameComplete();
       }, 1000);
     }
-  }, [cards, endGame]);
+  }, [cards, onGameComplete]);
   
   // Logic to check for a match
   useEffect(() => {

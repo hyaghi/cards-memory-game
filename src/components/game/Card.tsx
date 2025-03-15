@@ -24,33 +24,61 @@ export const Card = ({ card, handleChoice }: CardProps) => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Card flip animation variants
+  const flipVariants = {
+    front: {
+      rotateY: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    },
+    back: {
+      rotateY: 180,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  // Matched animation variants
+  const matchedVariants = {
+    initial: { scale: 1 },
+    matched: {
+      scale: [1, 1.1, 1],
+      transition: { duration: 0.5, ease: "easeInOut" }
+    }
+  };
+
   return (
-    <div className="relative">
+    <div className="relative perspective-500">
       <motion.div
-        className={`cursor-pointer h-20 md:h-28 rounded-xl ${
-          card.matched ? "opacity-70" : ""
+        className={`cursor-pointer h-20 md:h-28 rounded-xl preserve-3d ${
+          card.matched ? "opacity-80" : ""
         }`}
         onClick={handleChoice}
-        initial={{ rotateY: 0 }}
-        animate={{ rotateY: card.flipped ? 180 : 0 }}
-        transition={{ duration: 0.5 }}
+        initial="front"
+        animate={card.flipped ? "back" : "front"}
+        variants={flipVariants}
+        whileHover={{ scale: card.flipped ? 1 : 1.05 }}
+        {...(card.matched && {
+          initial: "initial",
+          animate: "matched",
+          variants: matchedVariants
+        })}
       >
         {/* Front of card (hidden when flipped) */}
-        <div 
-          className={`absolute w-full h-full rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center ${
-            card.flipped ? "opacity-0" : "opacity-100"
-          } transition-opacity duration-250 shadow-lg`}
+        <motion.div 
+          className="absolute w-full h-full rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center backface-hidden shadow-lg"
+          style={{ backfaceVisibility: "hidden" }}
         >
           <div className="text-white text-3xl font-bold">?</div>
-        </div>
+        </motion.div>
         
         {/* Back of card (shown when flipped) */}
-        <div 
-          className={`absolute w-full h-full rounded-xl bg-white flex items-center justify-center transform rotateY-180 ${
-            card.flipped ? "opacity-100" : "opacity-0"
-          } transition-opacity duration-250 shadow-md border-2 ${
+        <motion.div 
+          className={`absolute w-full h-full rounded-xl bg-white flex items-center justify-center backface-hidden shadow-md border-2 transform rotateY-180 ${
             card.matched ? "border-green-500" : "border-gray-100"
           }`}
+          style={{ 
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)"
+          }}
         >
           {isLoaded ? (
             <div className="text-indigo-800">
@@ -59,7 +87,7 @@ export const Card = ({ card, handleChoice }: CardProps) => {
           ) : (
             <div className="animate-pulse h-10 w-10 bg-indigo-100 rounded-full"></div>
           )}
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
