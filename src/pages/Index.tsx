@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { GameBoard } from "@/components/game/GameBoard";
@@ -42,7 +41,7 @@ const Index = () => {
         {!gameStarted ? (
           <div className="bg-white p-8 rounded-xl shadow-lg text-center max-w-lg mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Boost Your Brainpower!</h2>
-            <div className="space-y-4 mb-8">
+            <div className="space-y-6 mb-8">
               <GameControls 
                 difficulty={difficulty} 
                 setDifficulty={setDifficulty} 
@@ -52,7 +51,7 @@ const Index = () => {
             </div>
             <Button 
               onClick={startGame} 
-              className="bg-indigo-600 hover:bg-indigo-700 text-xl px-8 py-6"
+              className="bg-indigo-600 hover:bg-indigo-700 text-xl px-8 py-6 w-56"
             >
               Start Game
             </Button>

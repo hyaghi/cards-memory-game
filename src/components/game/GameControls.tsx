@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { InfoIcon } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface GameControlsProps {
   difficulty: "easy" | "medium" | "hard";
@@ -11,31 +12,33 @@ interface GameControlsProps {
 
 export const GameControls = ({ difficulty, setDifficulty, showRules, setShowRules }: GameControlsProps) => {
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-sm font-medium text-gray-500 mb-2">Select Difficulty</h3>
-        <div className="flex flex-wrap gap-2">
-          <Button 
-            variant={difficulty === "easy" ? "default" : "outline"}
-            onClick={() => setDifficulty("easy")}
-            className={difficulty === "easy" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
-          >
-            Easy
-          </Button>
-          <Button 
-            variant={difficulty === "medium" ? "default" : "outline"}
-            onClick={() => setDifficulty("medium")}
-            className={difficulty === "medium" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
-          >
-            Medium
-          </Button>
-          <Button 
-            variant={difficulty === "hard" ? "default" : "outline"}
-            onClick={() => setDifficulty("hard")}
-            className={difficulty === "hard" ? "bg-indigo-600 hover:bg-indigo-700" : ""}
-          >
-            Hard
-          </Button>
+    <div className="space-y-6">
+      <div className="flex flex-col items-center">
+        <h3 className="text-gray-500 font-medium mb-3">Select Difficulty</h3>
+        <div className="flex justify-center w-full">
+          <div className="flex gap-2">
+            <Button 
+              variant={difficulty === "easy" ? "default" : "outline"}
+              onClick={() => setDifficulty("easy")}
+              className={`w-28 ${difficulty === "easy" ? "bg-indigo-600 hover:bg-indigo-700" : ""}`}
+            >
+              Easy
+            </Button>
+            <Button 
+              variant={difficulty === "medium" ? "default" : "outline"}
+              onClick={() => setDifficulty("medium")}
+              className={`w-28 ${difficulty === "medium" ? "bg-indigo-600 hover:bg-indigo-700" : ""}`}
+            >
+              Medium
+            </Button>
+            <Button 
+              variant={difficulty === "hard" ? "default" : "outline"}
+              onClick={() => setDifficulty("hard")}
+              className={`w-28 ${difficulty === "hard" ? "bg-indigo-600 hover:bg-indigo-700" : ""}`}
+            >
+              Hard
+            </Button>
+          </div>
         </div>
       </div>
       
