@@ -6,8 +6,8 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // Set base path for GitHub Pages deployment - match repo name
-  base: '/match-memory-game/',
+  // Set base path for deployment - match repo name
+  base: '/', // Changed from '/match-memory-game/' to '/' for root domain
   server: {
     host: "::",
     port: 8080,
