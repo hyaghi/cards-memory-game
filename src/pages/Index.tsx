@@ -33,9 +33,9 @@ const Index = () => {
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-indigo-50 to-white px-4 py-12">
       <div className="max-w-5xl w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-indigo-900 mb-2">Mind Match</h1>
+          <h1 className="text-4xl font-bold text-indigo-900 mb-2">Yaghi's Match Memory Game</h1>
           <p className="text-lg text-indigo-700 mb-8">
-            Test your memory and concentration with this matching game!
+            Test your memory and concentration with this cards-matching game!
           </p>
         </div>
 
