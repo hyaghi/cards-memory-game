@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TimerProps {
   isRunning: boolean;
@@ -8,6 +9,7 @@ interface TimerProps {
 
 export const Timer = ({ isRunning, onTimeUpdate }: TimerProps) => {
   const [seconds, setSeconds] = useState(0);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     let interval: number | null = null;
@@ -38,8 +40,8 @@ export const Timer = ({ isRunning, onTimeUpdate }: TimerProps) => {
   
   return (
     <div>
-      <h3 className="text-sm font-medium text-gray-500">Time</h3>
-      <p className="text-2xl font-bold text-indigo-700">{formatTime(seconds)}</p>
+      <h3 className="text-xs sm:text-sm font-medium text-gray-500">Time</h3>
+      <p className="text-xl sm:text-2xl font-bold text-indigo-700">{formatTime(seconds)}</p>
     </div>
   );
 };
