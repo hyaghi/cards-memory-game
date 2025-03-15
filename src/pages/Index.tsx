@@ -41,7 +41,7 @@ const Index = () => {
 
         {!gameStarted ? (
           <div className="bg-white p-8 rounded-xl shadow-lg text-center max-w-lg mx-auto">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Ready to challenge your mind?</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Challenge Your Mind and Boost Your Brainpower!</h2>
             <div className="space-y-4 mb-8">
               <GameControls 
                 difficulty={difficulty} 
