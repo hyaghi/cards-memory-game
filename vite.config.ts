@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   // Set base path for deployment - match repo name
-  base: '/', // Changed from '/match-memory-game/' to '/' for root domain
+  base: '/', // Root path works for both Firebase and GitHub Pages
   server: {
     host: "::",
     port: 8080,
