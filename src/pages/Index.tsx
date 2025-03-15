@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { GameBoard } from "@/components/game/GameBoard";
@@ -22,7 +21,6 @@ const Index = () => {
   const isMobile = useIsMobile();
   
   useEffect(() => {
-    // Check if user is logged in
     const user = localStorage.getItem("memory-game-user");
     if (user) {
       setIsLoggedIn(true);
@@ -60,7 +58,6 @@ const Index = () => {
   };
   
   const handleUserLogin = (username: string) => {
-    // Save user to localStorage
     localStorage.setItem("memory-game-user", JSON.stringify({ 
       username,
       createdAt: new Date().toISOString()
@@ -79,7 +76,7 @@ const Index = () => {
       <div className="w-full max-w-5xl space-y-4 sm:space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-center sm:text-left">
-            <h1 className="text-3xl sm:text-4xl font-bold text-indigo-900 mb-1 sm:mb-2">Memory Game</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-indigo-900 mb-1 sm:mb-2">Yaghi's Memory Game</h1>
             <p className="text-base sm:text-lg text-indigo-700">
               Test your memory and concentration!
             </p>
